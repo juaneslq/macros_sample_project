@@ -4,19 +4,26 @@
 #include <cstdint>
 #include <iostream>
 #include <string> 
-#pragma once
+#include "utils.h"
 
 using namespace std;
-#define getStatusBit(bit)	((statusCode << bit) & 0x01)
+
+#define getBit(reg, bit)	((reg >> bit) & 0x01)
+#define setBit(reg, bit)	(reg | (0x01 << bit))
+#define clearBit(reg, bit)	(reg & ~(0x01 << bit))
 
 // STATUS BITS
 #define CONNECTED		0
 #define DISCONNECTED	1
+#define MSG_PENDING		2
+#define MSG_SENT		3
+
 
 typedef uint8_t device_int;
 
 class Ip {
 	device_int ipp[4];
+	device_int mac[8];
 public:
 	Ip() : ipp{ 192, 168, 0, 1 } {};
 	~Ip() {};
@@ -31,7 +38,7 @@ public:
 		ipStr.append(to_string(ipp[1])); ipStr.append(".");
 		ipStr.append(to_string(ipp[2])); ipStr.append(".");
 		ipStr.append(to_string(ipp[3]));
-		cout << ipStr << endl;
+		DEBUG_LOG(ipStr);
 		return ipStr;
 	}
 	void setAddress(string ipStr) {
@@ -57,14 +64,37 @@ class Device
 	Ip ip;
 
 public:
+	Device() {};
 	Device(device_int status) : statusCode(status) {};
 	~Device() { ip.~Ip(); };
 
-	bool isConnected() { return (getStatusBit(CONNECTED)) ? true : false; };
-	bool isDisconnected() { return (getStatusBit(DISCONNECTED)) ? true : false; }; 
+	bool isConnected() { return ( getBit(statusCode, CONNECTED) ) ? true : false; };
+	bool isDisconnected() { return (getBit(statusCode, DISCONNECTED) ) ? true : false; };
+	bool isMsgPending() { return ( getBit(statusCode, MSG_PENDING) ) ? true : false; };
+
+	void clearMsgPendingBit() { clearBit(statusCode, MSG_PENDING); };
+
+	void setSendMsgBit() { };
+
+
 	void setStatus(device_int status) { statusCode = status; };
 	int getStatus() { return (int) statusCode; };
 	Ip& getIp() { return ip; }
+
+};
+
+
+
+class Celphone : public Device {
+	device_int imei[8];
+	device_int phone_number[10];
+public:
+
+	Celphone() {};
+	~Celphone() {};
+	void sendMessage(Device &target) {};
+	void Call() {};
+	void sendEmail(Device &target) {};
 
 };
 

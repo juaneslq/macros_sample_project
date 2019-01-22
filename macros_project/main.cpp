@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "device.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -10,16 +11,16 @@ using namespace std;
 int main() {
 
 	if (lessThan(6, 5))
-		cout << "Hello World" << endl;
+		INFO_LOG("Hello World");
 
 	Device d(0x01);
 
-	cout << d.getStatus() << endl;
+	DEBUG_LOG( d.getStatus());
 	if (d.isConnected() == 1) {
-		cout << "device d connected!!" << endl;
+		INFO_LOG("Device d connected!");
 	}
 	if (d.isDisconnected() == 1) {
-		cout << "device d connected!!" << endl;
+		INFO_LOG("Device d disconnected!");
 	}
 
 	d.getIp().toString();
