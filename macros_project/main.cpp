@@ -5,7 +5,7 @@
 
 using namespace std;
 
-#define lessThan(x, y)   (x < y) ? true : false
+//#define lessThan(x, y)   (x < y) ? true : false
 
 
 int main() {
